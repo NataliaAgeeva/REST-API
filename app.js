@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
+app.use('/', require('./routes/users'));
+app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/checkURL'));
 
 app.listen(PORT, () => {
