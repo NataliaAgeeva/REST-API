@@ -25,10 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', require('./routes/users'));
-app.use('/', require('./routes/cards'));
-
-app.use('/', require('./routes/checkURL'));
+app.use('/', require('./routes'));
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
