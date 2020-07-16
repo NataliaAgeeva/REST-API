@@ -1,17 +1,7 @@
-const getCards = require('express').Router();
-const fs = require('fs').promises;
-const path = require('path');
+const router = require('express').Router();
+const { getCards, createCard } = require('../controllers/cards');
 
-const filePath = path.resolve('data', 'cards.json');
+router.get('/cards', getCards);
+router.post('/cards', createCard);
 
-getCards.get('/', (req, res) => {
-  fs.readFile(filePath)
-    .then((data) => {
-      res.status(200).send(JSON.parse(data));
-    })
-    .catch(() => {
-      res.status(500).json({ message: 'Запрашиваемый файл не найден' });
-    });
-});
-
-module.exports = getCards;
+module.exports = router;
