@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '5f109c8eee01e844c0db4c28',
+    _id: '5f103d07a5bb9e03e0f861b6',
   };
   next();
 });
@@ -27,5 +27,5 @@ app.use('/', require('./routes'));
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log('App listening on port 3000');
+  console.log(`App listening on port ${PORT}`);
 });
