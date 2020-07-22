@@ -1,3 +1,4 @@
+const validator = require('validator');
 const User = require('../models/user');
 
 const opts = {
@@ -12,10 +13,14 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getOneUser = (req, res) => {
-  User.findById(req.params.id)
-    .orFail(res.status(404).json({ message: 'Запрашиваемый пользователь отсутствует' }))
-    .then((user) => res.status(200).json({ data: user }))
-    .catch(() => res.status(500).json({ message: 'Произошла ошибка' }));
+  if (validator.isMongoId(req.params.id)) {
+    User.findById(req.params.id)
+      .orFail(() => new Error('Запрашиваемый пользователь отсутствует'))
+      .then((user) => res.status(200).json({ data: user }))
+      .catch((err) => res.status(404).json({ message: err.message }));
+  } else {
+    res.status(400).json({ message: 'Ошибка пользовательского ввода id пользователя' });
+  }
 };
 
 module.exports.createUser = (req, res) => {

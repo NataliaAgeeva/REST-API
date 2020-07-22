@@ -1,3 +1,4 @@
+const validator = require('validator');
 const Card = require('../models/card');
 
 module.exports.getCards = (req, res) => {
@@ -21,10 +22,16 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
-    .orFail(res.status(404).json({ message: 'Запрашиваемая карточка отсутствует' }))
-    .then((card) => res.status(200).json({ data: card }))
-    .catch(() => res.status(500).json({ message: 'Произошла ошибка' }));
+  if (validator.isMongoId(req.params.cardId)) {
+    Card.findByIdAndDelete(req.params.cardId)
+      .orFail(() => new Error('Запрашиваемая карточка отсутствует'))
+      .then((card) => {
+        res.status(200).json({ data: card });
+      })
+      .catch((err) => res.status(404).json({ message: err.message }));
+  } else {
+    res.status(400).json({ message: 'Ошибка пользовательского ввода id карточки' });
+  }
 };
 
 module.exports.likeCard = (req, res) => {
@@ -33,9 +40,9 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(res.status(404).json({ message: 'Запрашиваемая карточка отсутствует' }))
-    .then((cards) => res.status(200).json({ data: cards }))
-    .catch(() => res.status(500).json({ message: 'Произошла ошибка' }));
+    .orFail(() => new Error('Запрашиваемая карточка отсутствует'))
+    .then((card) => res.status(200).json({ data: card }))
+    .catch((err) => res.status(404).json({ message: err.message }));
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -44,7 +51,7 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(res.status(404).json({ message: 'Запрашиваемая карточка отсутствует' }))
-    .then((cards) => res.status(200).json({ data: cards }))
-    .catch(() => res.status(500).json({ message: 'Произошла ошибка' }));
+    .orFail(() => new Error('Запрашиваемая карточка отсутствует'))
+    .then((card) => res.status(200).json({ data: card }))
+    .catch((err) => res.status(404).json({ message: err.message }));
 };
