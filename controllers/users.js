@@ -31,8 +31,9 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).json({ message: err.message });
+      } else {
+        res.status(500).json({ message: 'Произошла ошибка' });
       }
-      res.status(500).json({ message: 'Произошла ошибка' });
     });
 };
 
@@ -44,8 +45,9 @@ module.exports.updateMyProfile = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).json({ message: err.message });
+      } else {
+        res.status(500).json({ message: 'Произошла ошибка' });
       }
-      res.status(500).json({ message: 'Произошла ошибка' });
     });
 };
 
@@ -57,7 +59,8 @@ module.exports.updateMyAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).json({ message: err.message });
+      } else {
+        res.status(500).json({ message: 'Произошла ошибка' });
       }
-      res.status(500).json({ message: 'Произошла ошибка' });
     });
 };

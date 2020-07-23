@@ -35,23 +35,31 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .orFail(() => new Error('Запрашиваемая карточка отсутствует'))
-    .then((card) => res.status(200).json({ data: card }))
-    .catch((err) => res.status(404).json({ message: err.message }));
+  if (validator.isMongoId(req.params.cardId)) {
+    Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true },
+    )
+      .orFail(() => new Error('Запрашиваемая карточка отсутствует'))
+      .then((card) => res.status(200).json({ data: card }))
+      .catch((err) => res.status(404).json({ message: err.message }));
+  } else {
+    res.status(400).json({ message: 'Ошибка пользовательского ввода id карточки' });
+  }
 };
 
 module.exports.dislikeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
-    .orFail(() => new Error('Запрашиваемая карточка отсутствует'))
-    .then((card) => res.status(200).json({ data: card }))
-    .catch((err) => res.status(404).json({ message: err.message }));
+  if (validator.isMongoId(req.params.cardId)) {
+    Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true },
+    )
+      .orFail(() => new Error('Запрашиваемая карточка отсутствует'))
+      .then((card) => res.status(200).json({ data: card }))
+      .catch((err) => res.status(404).json({ message: err.message }));
+  } else {
+    res.status(400).json({ message: 'Ошибка пользовательского ввода id карточки' });
+  }
 };
